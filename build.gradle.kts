@@ -3,9 +3,7 @@ import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask
 import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask.JarUrl
 import groovy.lang.Closure
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
-import java.net.HttpURLConnection
-import java.net.ConnectException
-import java.net.URL
+import org.gradle.kotlin.dsl.register
 
 plugins {
     kotlin("jvm") version "1.8.0"
@@ -25,6 +23,7 @@ repositories {
     mavenCentral()
     maven(url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven(url = "https://oss.sonatype.org/content/groups/public/")
+    maven(url = "https://maven.maxhenkel.de/repository/public")
 }
 
 val shadowImplementation: Configuration by configurations.creating
@@ -33,72 +32,44 @@ configurations["implementation"].extendsFrom(shadowImplementation)
 dependencies {
     shadowImplementation(kotlin("stdlib"))
     compileOnly("org.spigotmc:spigot-api:$pluginVersion-R0.1-SNAPSHOT")
+    // compileOnly(files("libs/voicechat-bukkit-2.5.27.jar"))
+    compileOnly("de.maxhenkel.voicechat:voicechat-api:2.5.27")
 }
 
 configure<BukkitPluginDescription> {
-    main = "@group@.Main"
+    main = "com.github.ringoame196_s_mcPlugin.Main"
     version = pluginVersion
     apiVersion = "1." + pluginVersion.split(".")[1]
-    author = "@author@"
-    website = "@website@"
-    /*
-    コマンド追加用
+    author = "ringoame196_s_mcPlugin"
+    website = "https://github.com/ringoame196-s-mcPlugin"
+
     commands {
-        register("test") {
-            description = "This is a test command!"
-            aliases = listOf("t")
-            permission = "testplugin.test"
-            usage = "Just run the command!"
+        register("transceiver") {
+            description = "トランシーバー用のコマンド"
+            permission = "op"
+            usage = "/transceiver <トランシーバー番号>"
         }
     }
-    */
 }
 
 tasks.withType<ShadowJar> {
     configurations = listOf(shadowImplementation)
     archiveClassifier.set("")
-    relocate("kotlin", "@group@.libs.kotlin")
-    relocate("org.intellij.lang.annotations", "@group@.libs.org.intellij.lang.annotations")
-    relocate("org.jetbrains.annotations", "@group@.libs.org.jetbrains.annotations")
+    relocate("kotlin", "com.github.ringoame196_s_mcPlugin.libs.kotlin")
+    relocate("org.intellij.lang.annotations", "com.github.ringoame196_s_mcPlugin.libs.org.intellij.lang.annotations")
+    relocate("org.jetbrains.annotations", "com.github.ringoame196_s_mcPlugin.libs.org.jetbrains.annotations")
 }
 
 tasks.named("build") {
     dependsOn("shadowJar")
     // プラグインを特定のパスへ自動コピー
-    val copyFilePath = "D:/デスクトップ/Twitterサーバー/plugins" // コピー先のフォルダーパス
+    val copyFilePath = "D:\\デスクトップ\\1.21.4テストサーバー\\plugins" // コピー先のフォルダーパス
     val copyFile = File(copyFilePath)
     if (copyFile.exists() && copyFile.isDirectory) {
         doFirst {
             copy {
                 from(buildDir.resolve("libs/${project.name}.jar"))
                 into(copyFile)
-            }
-        }
-        doLast { // AutomaticCreatingPluginUpdate連携
-            // APIリクエストを行う
-            val port = 25585
-            val apiUrl = "http://localhost:$port/plugin?name=${project.name}"
-            val url = URL(apiUrl)
-            val connection = url.openConnection() as HttpURLConnection
-
-            try {
-                connection.requestMethod = "GET"
-                connection.connect()
-
-                // レスポンスコードを確認
-                if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                    val response = connection.inputStream.bufferedReader().use { it.readText() }
-                    println("API Response: $response")
-                } else {
-                    println("Failed to get response: ${connection.responseCode}")
-                }
-            } catch (e:ConnectException) {
-                println("Could not connect to reload destination server: ${e.message}")
-            } catch (e: Exception) {
-                e.printStackTrace()
-                println("Error during API request: ${e.message}")
-            } finally {
-                connection.disconnect()
             }
         }
     }
