@@ -19,21 +19,22 @@ class PlayerInteractEvent : Listener {
         val item = player.inventory.itemInOffHand
         val itemMeta = item.itemMeta ?: return
         val itemName = itemMeta.displayName
-        val lore = itemMeta.lore ?: return
-        val number = lore[0]?.toString() ?: return
+        val number = transceiverManager.acquisitionGroupNumber(item) ?: return
         if (!player.isSneaking) return
-        if (itemName != Data.ITEM_NAME) return
+        if (itemName != Data.TRANSCEIVER_ITEM_NAME) return
         if (e.action != Action.RIGHT_CLICK_AIR) return
 
         // トランシーバーの受信メッセージ
-        val message = "${ChatColor.GOLD}[トランシーバー] ${number}番通信を受信！"
+        val title = "${ChatColor.YELLOW}トランシーバー通信を受信！"
+        val message = "${ChatColor.GOLD}${number}番のトランシーバーをオフハンドに持って参加しよう！"
         val sound = Sound.BLOCK_NOTE_BLOCK_PLING
         var c = 0
 
         for (player in Bukkit.getOnlinePlayers()) {
             if (!transceiverManager.isHaveItem(player, number)) continue
             player.playSound(player, sound, 1f, 1f)
-            player.sendTitle("", message)
+            player.sendTitle("", title)
+            player.sendMessage(message)
             c++
         }
 
