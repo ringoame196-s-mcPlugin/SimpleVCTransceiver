@@ -1,5 +1,6 @@
 package com.github.ringoame196_s_mcPlugin
 
+import com.github.ringoame196_s_mcPlugin.events.ChangeTransceiverEvent
 import com.github.ringoame196_s_mcPlugin.events.PlayerInteractEvent
 import de.maxhenkel.voicechat.api.BukkitVoicechatService
 import org.bukkit.Bukkit
@@ -26,5 +27,6 @@ class Main : JavaPlugin() {
         command!!.setExecutor(Command())
         command.tabCompleter = TabCompleter()
         server.pluginManager.registerEvents(PlayerInteractEvent(), this)
+        server.pluginManager.registerEvents(ChangeTransceiverEvent(), this)
     }
 }
