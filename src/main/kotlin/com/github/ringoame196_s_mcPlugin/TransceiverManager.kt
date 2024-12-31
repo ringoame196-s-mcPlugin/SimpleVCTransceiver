@@ -6,6 +6,7 @@ import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.util.UUID
 
 class TransceiverManager {
     fun createItem(number: String): ItemStack {
@@ -58,7 +59,7 @@ class TransceiverManager {
     }
 
     private fun createGroup(api: VoicechatServerApi, groupName: String): Group {
-        val groupPass = Data.group_password
+        val groupPass = UUID.randomUUID().toString()
 
         val group = api.groupBuilder()
             .setPersistent(true) // Doesn't remove the group once all players left
