@@ -13,7 +13,10 @@ class TransceiverManager {
         val itemMeta = item.itemMeta
         itemMeta?.setDisplayName(Data.TRANSCEIVER_ITEM_NAME)
         itemMeta?.lore = mutableListOf(number)
-        itemMeta?.setCustomModelData(Data.CUSTOM_MODEL_DATA)
+
+        val customModelDataComponent = itemMeta?.customModelDataComponent
+        customModelDataComponent?.strings = mutableListOf("transceiver")
+        itemMeta?.setCustomModelDataComponent(customModelDataComponent)
 
         item.itemMeta = itemMeta
         return item
