@@ -2,9 +2,6 @@
 
 ## プラグイン説明
 
-## プラグインダウンロード
-[ダウンロードリンク](https://github.com/ringoame196-s-mcPlugin/SimpleVCTransceiver/releases/latest)
-
 ## コマンド
 | コマンド名   |     説明      | 権限 |
 | --- | ----------- | ------- |
