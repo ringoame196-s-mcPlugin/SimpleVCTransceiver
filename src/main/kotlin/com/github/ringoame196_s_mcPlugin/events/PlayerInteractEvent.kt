@@ -19,7 +19,7 @@ class PlayerInteractEvent : Listener {
         val item = player.inventory.itemInOffHand
         val itemMeta = item.itemMeta ?: return
         val itemName = itemMeta.displayName
-        val number = transceiverManager.acquisitionGroupNumber(item) ?: return
+        val number = transceiverManager.acquisitionTransceiverNumber(item) ?: return
         if (!player.isSneaking) return
         if (itemName != Data.TRANSCEIVER_ITEM_NAME) return
         if (e.action != Action.RIGHT_CLICK_AIR) return
@@ -31,7 +31,7 @@ class PlayerInteractEvent : Listener {
         var c = 0
 
         for (player in Bukkit.getOnlinePlayers()) {
-            if (!transceiverManager.isHaveItem(player, number)) continue
+            if (!transceiverManager.isHotBarHaveItem(player, number)) continue
             player.playSound(player, sound, 1f, 1f)
             player.sendTitle("", title)
             player.sendMessage(message)
