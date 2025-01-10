@@ -14,7 +14,7 @@ class Command : CommandExecutor {
         if (args.isEmpty()) return false
         val number = args[0]
         val item = transceiverManager.createItem(number)
-        val message = "${ChatColor.GOLD}トランシーバーを生成しました"
+        val message = "${ChatColor.GOLD}${number}番のトランシーバーを生成しました"
         sender.inventory.addItem(item)
         sender.sendMessage(message)
 
